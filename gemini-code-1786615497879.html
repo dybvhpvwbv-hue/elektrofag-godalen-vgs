@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elektro Planlegging & Dokumentasjon - Sjekkliste</title>
+  <style>
+    :root {
+      --primary: #1a365d;
+      --primary-light: #2b6cb0;
+      --bg: #f7fafc;
+      --card-bg: #ffffff;
+      --text: #2d3748;
+      --text-muted: #718096;
+      --border: #e2e8f0;
+      --success: #38a169;
+      --success-bg: #f0fff4;
+      --warning-bg: #fffaf0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 20px 12px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* Overskrift */
+    .app-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .app-header h1 {
+      color: var(--primary);
+      font-size: 24px;
+    }
+
+    .app-header p {
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    /* Låst/Sticky Fremdriftslinje øverst */
+    .sticky-progress {
+      position: sticky;
+      top: 10px;
+      z-index: 100;
+      background: var(--primary);
+      color: white;
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      margin-bottom: 24px;
+    }
+
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      font-weight: bold;
+      font-size: 15px;
+      margin-bottom: 8px;
+    }
+
+    .progress-bar-bg {
+      background: rgba(255, 255, 255, 0.2);
+      height: 12px;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      background: #48bb78;
+      height: 100%;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* Kasser/Seksjoner nedover */
+    .section-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border);
+      margin-bottom: 24px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      color: var(--primary);
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .section-title span.law {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: normal;
+    }
+
+    .group-label {
+      font-size: 14px;
+      font-weight: bold;
+      color: var(--primary-light);
+      margin: 16px 0 8px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Sjekkbokser og rader */
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+
+    .check-item:hover {
+      border-color: var(--primary-light);
+      background: #f8fafc;
+    }
+
+    .check-item.checked {
+      background-color: var(--success-bg);
+      border-color: #c6f6d5;
+    }
+
+    .check-item input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      margin-right: 12px;
+      margin-top: 2px;
+      cursor: pointer;
+      accent-color: var(--success);
+      flex-shrink: 0;
+    }
+
+    .item-text {
+      flex-grow: 1;
+    }
+
+    .item-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .check-item.checked .item-title {
+      text-decoration: line-through;
+      color: #4a5568;
+    }
+
+    .item-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Skjema-felter */
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    @media (max-width: 600px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Knapper */
+    .btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .btn:hover {
+      background: var(--primary-light);
+    }
+
+    @media print {
+      .sticky-progress, .btn {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- OVERSKRIFT -->
+  <div class="app-header">
+    <h1>⚡ Elektro Planlegging & Dokumentasjon</h1>
+    <p>Samlet vertikal sjekkliste for Elkraft</p>
+  </div>
+
+  <!-- STICKY FREMDRIFTSLINJE -->
+  <div class="sticky-progress">
+    <div class="progress-info">
+      <span>Totalt fullført:</span>
+      <span id="progressText">0 av 0 (0%)</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progressBar"></div>
+    </div>
+  </div>
+
+  <form id="mainForm">
+
+    <!-- ==================== SEKSJON 1: RISIKOVURDERING ==================== -->
+    <div class="section-card">
+      <div class="section-title">
+        <span>🛡️ 1. Risikovurdering & HMS</span>
+        <span class="law">fel § 16</span>
+      </div>
+
+      <div class="group-label">Personlig Verneutstyr</div>
+      
+      <label class="check-item">
+        <input type="checkbox" class="task-checkbox">
+        <div class="item-text">
+          <div class="item-title">Vernesko på og i god stand</div>
+          <div class="item-desc">Påkrevd fottøy i verksted/arbeidsområde.</div>
+        </div>
+      </label>
+
+      <label class="check-item">
+        <input type="checkbox" class="task-checkbox">
+        <div class="item-text">
+          <div class="item-title">Smykker, ringer og klokker er tatt av</div>
+          <div class="item-desc">Forhindrer kortslutning og fasthekting.</div>
+        </div>
+      </label>
+
+      <label class="check-item">
+        <input type="checkbox" class="task-checkbox">
+        <div class="item-text">
+          <div class="item-title">Vernebriller / visir er tilgjengelig ved behov</div>
+          <div class="item-desc">Benyttes ved fare for sprut, gnister eller støv.</div>
+        </div>
+      </label>
+
+      <div class="group-label">De 5 Sikkerhetsreglene (Frikobling)</div>
+
+      <label class="check-item">
+        <input type="checkbox" class="task-checkbox">
+        <div class="item-text">
+          <div class="item-title">1. Frikoble anlegget komplett</div>
+          <div class="item-desc">Legg ut sikkerhetsbryter eller automatvern.</div>
+        </div>
+      </label>
+
+      <label class="check-item">
+        <input type="checkbox" class="task-checkbox">
+        <div class="item-text">
+          <div class="item-title">2. Sikre mot gjeninnkobling</div>
+          <div class="item-desc">Bruk LOTO-hengelås, låseutstyr eller advarselsskilt.</div>
+        </div>
+      </label>
+
+      <label class="check-item">
+        <input type="checkbox" class="task-checkbox">
+        <div class="item-text">
+          <div class="item-title">3. Kontroller at anlegget er spenningsløst</div>
+          <div class="item-desc">Mål med godkjent spenningstester (toppole). Test instrumentet før og etter måling.</div>
+        </div>
+      </label>
+
+      <label class="check-item">
+        <input type="checkbox" class="task-checkbox">
+        <div class="item-text">
+          <div class="item-title">4. Gjør jording og kortslutning</div>
+          <div class="item-desc">Om påkrevd ved høyere spenningsnivåer eller parallellføringer i TN-nett.</div>
+        </div>
+      </label>
+
+      <label class="check-item">
+        <input type="checkbox" class="task-checkbox">
+        <div class="item-text">
+          <div class="item-title">5. Tildekk nærliggende spenningsførende deler</div>
+          <div class="item-desc">Sikre berøringsfare mot andre operative kurser i nærheten.</div>
+        </div>
+      </label>
+
+      <div class="group-label">Arbeidssted & Verktøy</div>
+
+      <label class="check-item">
+        <input type="checkbox" class="task-checkbox">
+        <div class="item-text">
+          <div class="item-title">Arbeidsområdet er tørt, ryddig og har god belysning</div>
+        </div>
+      </label>
+
+      <label class="check-item">
+        <input type="checkbox" class="task-checkbox">
+        <div class="item-text">
+          <div class="item-title">Isolert håndverktøy (1000V IEC 60900) er kontrollert og skadefritt</div>
+        </div>
+      </label>
+    </div>
+
+    <!-- ==================== SEKSJON 2: PLANLEGGING ==================== -->
+    <div class="section-card">
+      <div class="section-title">
+        <span>📋 2. Planlegging & Beregninger</span>
+        <span class="law">Sjekkliste</span>
+      </div>
+
+      <div class="group-label">Tegninger & Dokumenter</div>
+
+      <label class="check-item">
+        <input type="checkbox" class="task-checkbox">
+        <div class="item-text">
+          <div class="item-title">Enlinjeskjema og Flerlinjeskjema er utarbeidet</div>
+          <div class="item-desc">Viser kursoppbygging, vern og fullstendig lederkobling.</div>
+        </div>
+      </label>
+
+      <label class="check-item">
+        <input type="checkbox" class="task-checkbox">
+        <div class="item-text">
+          <div class="item-title">Hovedstrøm- og styrestrømsskjema er kontrollert</div>
+          <div class="item-desc">Dersom det er automasjon/PLS involvert (f.eks. motorstyring).</div>
+        </div>
+      </label>
+
+      <label class="check-item">
+        <input type="checkbox" class="task-checkbox">
+        <div class="item-text">
+          <div class="item-title">Material- og utstyrsliste er klar</div>
+          <div class="item-desc">Kabler, vern, utstyr, klemmer og nødvendig måleutstyr.</div>
+        </div>
+      </label>
+
+      <div class="group-label">Kursberegninger</div>
+
+      <label class="check-item">
+        <input type="checkbox" class="task-checkbox">
+        <div class="item-text">
+          <div class="item-title">Belastningsbetingelse valideres: Ib ≤ In ≤ Iz</div>
+          <div class="item-desc">Forbruksstrøm (Ib) ≤ Vernets merkestrøm (In) ≤ Kabelens korrigerte strømføringsevne (Iz).</div>
+        </div>
+      </label>
+
+      <label class="check-item">
+        <input type="checkbox" class="task-checkbox">
+        <div class="item-text">
+          <div class="item-title">Nedre prøvestrøm sjekket: I1 = 1,13 · In</div>
+          <div class="item-desc">Garantert uforstyrret drift under normalbelastning.</div>
+        </div>
+      </label>
+
+      <label class="check-item">
+        <input type="checkbox" class="task-checkbox">
+        <div class="item-text">
+          <div class="item-title">Øvre prøvestrøm sjekket: I2 ≤ 1,45 · Iz</div>
+          <div class="item-desc">Garantert utløsning ved overbelastning før kabelen skades.</div>
+        </div>
+      </label>
+
+      <label class="check-item">
+        <input type="checkbox" class="task-checkbox">
+        <div class="item-text">
+          <div class="item-title">Spenningsfall beregnet: ΔU ≤ 4%</div>
+          <div class="item-desc">Beregnet spenningsfall fra fordeling til lengste forbrukspunkt.</div>
+        </div>
+      </label>
+    </div>
+
+    <!-- ==================== SEKSJON 3: SLUTTKONTROLL ==================== -->
+    <div class="section-card">
+      <div class="section-title">
+        <span>🔍 3. Sluttkontroll</span>
+        <span class="law">NEK 400 Del 6</span>
+      </div>
+
+      <div class="group-label">Visuell Kontroll</div>
+
+      <label class="check-item">
+        <input type="checkbox" class="task-checkbox">
+        <div class="item-text">
+          <div class="item-title">Kabeltverrsnitt og fargekoding er korrekt</div>
+          <div class="item-desc">Gul/Grønn for PE, Blå for N-leder, Brun/Sort/Grå for faser.</div>
+        </div>
+      </label>
+
+      <label class="check-item">
+        <input type="checkbox" class="task-checkbox">
+        <div class="item-text">
+          <div class="item-title">Kapslingsgrad (IP-grad) tilpasset omgivelser</div>
+          <div class="item-desc">Min. IP20 innendørs tørre rom, IP44 i våtrom/utendørs.</div>
+        </div>
+      </label>
+
+      <label class="check-item">
+        <input type="checkbox" class="task-checkbox">
+        <div class="item-text">
+          <div class="item-title">Merking av kurser, vern og utstyr utført</div>
+        </div>
+      </label>
+
+      <div class="group-label">Måleresultater (Målinger med Installasjonstester)</div>
+
+      <label class="check-item">
+        <input type="checkbox" class="task-checkbox">
+        <div class="item-text">
+          <div class="item-title">Kontinuitet i beskyttelsesleder (Rp ≤ 1,0 Ω)</div>
+          <div class="item-desc">Sikrer uavbrutt forbindelse i PE-leder fra tavle til alle punkter.</div>
+        </div>
+      </label>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="mKont">Målt Kontinuitet (Ω):</label>
+          <input type="number" step="0.01" class="form-control" id="mKont" placeholder="F.eks. 0.12">
+        </div>
+        <div class="form-group">
+          <label for="mIso">Målt Isolasjonsmotstand (MΩ):</label>
+          <input type="number" step="0.1" class="form-control" id="mIso" placeholder="F.eks. 99.9">
+        </div>
+      </div>
+
+      <label class="check-item">
+        <input type="checkbox" class="task-checkbox">
+        <div class="item-text">
+          <div class="item-title">Isolasjonsmotstand testet (Riso ≥ 1,0 MΩ @ 500V DC)</div>
+          <div class="item-desc">Måles med utstyr frakoblet.</div>
+        </div>
+      </label>
+
+      <label class="check-item">
+        <input type="checkbox" class="task-checkbox">
+        <div class="item-text">
+          <div class="item-title">Jordfeilbryter / RCD testet (Utløsertid ≤ 300 ms)</div>
+          <div class="item-desc">Testet med instrument ved merkefeilstrøm (IΔn).</div>
+        </div>
+      </label>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="mRcdTime">Målt Utløsertid (ms):</label>
+          <input type="number" class="form-control" id="mRcdTime" placeholder="F.eks. 22">
+        </div>
+        <div class="form-group">
+          <label for="mRcdCurr">Målt Utløserstrøm (mA):</label>
+          <input type="number" class="form-control" id="mRcdCurr" placeholder="F.eks. 21">
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SEKSJON 4: SAMSVARSERKLÆRING ==================== -->
+    <div class="section-card">
+      <div class="section-title">
+        <span>📜 4. Samsvarserklæring & Sluttdokumentasjon</span>
+        <span class="law">fel § 13</span>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="sElev">Utførende (Navn):</label>
+          <input type="text" class="form-control" id="sElev" placeholder="Ditt navn">
+        </div>
+        <div class="form-group">
+          <label for="sKlasse">Skole / Klasse:</label>
+          <input type="text" class="form-control" id="sKlasse" placeholder="Fagskolen Rogaland - Elkraft">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="sAnlegg">Arbeidssted / Anlegg:</label>
+          <input type="text" class="form-control" id="sAnlegg" placeholder="F.eks. TN-nett / Motorstyring">
+        </div>
+        <div class="form-group">
+          <label for="sDato">Dato utført:</label>
+          <input type="date" class="form-control" id="sDato">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="sBeskrivelse">Beskrivelse av installasjonen:</label>
+        <textarea class="form-control" id="sBeskrivelse" rows="3" placeholder="Beskriv kort hva du har planlagt, montert eller testet..."></textarea>
+      </div>
+
+      <label class="check-item">
+        <input type="checkbox" class="task-checkbox">
+        <div class="item-text">
+          <div class="item-title">Bekreftelse: Anlegget oppfyller kravene i fel og NEK 400</div>
+          <div class="item-desc">Jeg bekrefter at risikovurdering, planlegging og sluttkontroll er gjennomført.</div>
+        </div>
+      </label>
+
+      <button type="button" class="btn" onclick="window.print()">🖨️ Skriv ut / Lagre Dokumentasjon som PDF</button>
+    </div>
+
+  </form>
+
+</div>
+
+<script>
+  // Sett dagens dato som standard i datofeltet
+  document.getElementById('sDato').valueAsDate = new Date();
+
+  // Hent alle sjekkbokser på siden
+  const checkboxes = document.querySelectorAll('.task-checkbox');
+  const totalTasks = checkboxes.length;
+
+  // Lytter til endring på alle sjekkbokser
+  checkboxes.forEach((cb) => {
+    cb.addEventListener('change', (e) => {
+      const parentItem = e.target.closest('.check-item');
+      if (e.target.checked) {
+        parentItem.classList.add('checked');
+      } else {
+        parentItem.classList.remove('checked');
+      }
+      updateProgress();
+    });
+  });
+
+  // Funksjon for å oppdatere fremdriftslinjen øverst
+  function updateProgress() {
+    const checkedCount = document.querySelectorAll('.task-checkbox:checked').length;
+    const percentage = Math.round((checkedCount / totalTasks) * 100);
+
+    document.getElementById('progressBar').style.width = percentage + '%';
+    document.getElementById('progressText').innerText = `${checkedCount} av ${totalTasks} fullført (${percentage}%)`;
+  }
+
+  // Initialiser fremdrift ved oppstart
+  updateProgress();
+</script>
+
+</body>
+</html>
